@@ -1,42 +1,47 @@
-const customName = document.getElementById('customname');
-const randomize = document.querySelector('.randomize');
-const story = document.querySelector('.story');
+const displayedImage = document.querySelector('.displayed-img');
+const thumbBar = document.querySelector('.thumb-bar');
 
-function randomValueFromArray(array){
-  const random = Math.floor(Math.random()*array.length);
-  return array[random];
-}
+const btn = document.querySelector('button');
+const overlay = document.querySelector('.overlay');
 
-const storyText = 'It was 94 fahrenheit outside, so :insertx: went for a walk. When they got to :inserty:, they stared in horror for a few moments, then :insertz:. Bob saw the whole thing, but was not surprised — :insertx: weighs 300 pounds, and it was a hot day.';
-const insertX = ['Willy the Goblin', 'Big Daddy', 'Father Christmas'];
-const insertY = ['the soup kitchen', 'Disneyland', 'the White House'];
-const insertZ = ['spontaneously combusted', 'melted into a puddle on the sidewalk', 'turned into a slug and crawled away'];
+/* Declaring the array of image filenames */
+const imageFiles = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg', 'pic4.jpg', 'pic5.jpg'];
 
-randomize.addEventListener('click', result);
 
-function result() {
-  let newStory = storyText;
+/* Declaring the alternative text for each image file */
+const altTexts = {
+    'pic1.jpg': 'A beautiful sunset over the ocean.',
+    'pic2.jpg': 'A scenic mountain landscape.',
+    'pic3.jpg': 'A city skyline at night.',
+    'pic4.jpg': 'A forest path surrounded by tall trees.',
+    'pic5.jpg': 'A close-up of a colorful flower.'
+};
 
-  const xItem = randomValueFromArray(insertX);
-  const yItem = randomValueFromArray(insertY);
-  const zItem = randomValueFromArray(insertZ);
+/* Looping through images */
+imageFiles.forEach(file => {
+    const newImage = document.createElement('img');
+    newImage.setAttribute('src', `images/${file}`);
+    newImage.setAttribute('alt', altTexts[file]);
+    thumbBar.appendChild(newImage);
 
-  newStory = newStory.replaceAll(':insertx:',xItem);
-  newStory = newStory.replaceAll(':inserty:',yItem);
-  newStory = newStory.replaceAll(':insertz:',zItem);
+    // Click event to update displayed image
+    newImage.addEventListener('click', () => {
+        displayedImage.setAttribute('src', `images/${file}`);
+        displayedImage.setAttribute('alt', altTexts[file]);
+    });
+});
 
-  if (customName.value !== '') {
-    const name = customName.value;
-    newStory = newStory.replaceAll('Bob', name);
-  }
+/* Wiring up the Darken/Lighten button */
+btn.addEventListener('click', () => {
+    const currentClass = btn.getAttribute('class');
 
-  if (document.getElementById("uk").checked) {
-    const weight = `${Math.round(300*0.0714286)} stone`;
-    const temperature =  `${Math.round((94-32) * 5/9)} centigrade`;
-    newStory = newStory.replaceAll('94 fahrenheit', temperature);
-    newStory = newStory.replaceAll('300 pounds', weight);
-  }
-
-  story.textContent = newStory;
-  story.style.visibility = 'visible';
-}
+    if (currentClass === 'dark') {
+        btn.setAttribute('class', 'light');
+        btn.textContent = 'Lighten';
+        overlay.style.backgroundColor = 'rgb(0 0 0 / 50%)';
+    } else {
+        btn.setAttribute('class', 'dark');
+        btn.textContent = 'Darken';
+        overlay.style.backgroundColor = 'rgb(0 0 0 / 0%)';
+    }
+});
